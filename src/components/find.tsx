@@ -22,8 +22,8 @@ export const SearchInput: FC<Props> = ({placeholder}) => {
 	const searchParamQuery = searchParams.get('search') ?? '';
 
 	const [query, setQuery] = useState(searchParamQuery);
-    const [, debouncedQuery] = useDebouncedValue(query, 100);
-    const inputRef = useRef<HTMLInputElement | null>(null);
+	const [, debouncedQuery] = useDebouncedValue(query, 100);
+	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
 		router.prefetch(`/movies?search=${encodeURIComponent(query)}`);
@@ -31,15 +31,16 @@ export const SearchInput: FC<Props> = ({placeholder}) => {
 
 	useEffect(() => {
 		if (debouncedQuery) {
-			router.push(`/movies?search=${encodeURIComponent(query)}`, {scroll: true});
+			router.push(`/movies?search=${encodeURIComponent(query)}`, {scroll: false});
+			inputRef?.current?.focus();
 		}
 	}, [debouncedQuery, query, router]);
 
-	useEffect(() => {
-		if (pathname === `/movies` && !query) {
-			router.push(`/`, {scroll: true});
-		}
-	}, [pathname, query, router]);
+	// useEffect(() => {
+	// 	if (pathname === `/movies` && !query) {
+	// 		router.push(`/`, {scroll: false});
+	// 	}
+	// }, [pathname, query, router]);
 
 	useEffect(() => {
 		if (pathname !== `/movies`) {
@@ -65,6 +66,7 @@ export const SearchInput: FC<Props> = ({placeholder}) => {
 			enterKeyHint='search'
 			name='search'
 			value={query}
+			autoComplete='off'
 		/>
 	);
 };
